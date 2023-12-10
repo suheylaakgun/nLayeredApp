@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Business.Dtos.Requests;
 using Business.Dtos.Responses;
 using Core.DataAccess.Paging;
 using Entities.Concretes;
@@ -15,7 +16,8 @@ namespace Business.AutoMapper.Profiles
         public ProductProfile()
         {
             //Create Product
-            CreateMap<Product, GetListProductResponse>().ReverseMap();
+            CreateMap<CreateProductRequest, Product>().ReverseMap();
+            CreateMap<Product, CreatedProductResponse>().ReverseMap();
 
             //GetList Product
             CreateMap<Paginate<Product>, Paginate<GetListProductResponse>>().ReverseMap();

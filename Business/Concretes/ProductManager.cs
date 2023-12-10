@@ -24,24 +24,35 @@ namespace Business.Concretes
             _mapper = mapper;
         }
 
+        #region CreatedProductResponse commented poor code
+        //public async Task<CreatedProductResponse> Add(CreateProductRequest createProductRequest)
+        //{
+        //    Product product = new Product();
+        //    product.Id = Guid.NewGuid();
+        //    product.ProductName = createProductRequest.ProductName;
+        //    product.QuantityPerUnit = createProductRequest.QuantityPerUnit;
+        //    product.UnitsInStock = createProductRequest.UnitsInStock;
+        //    product.UnitPrice = createProductRequest.UnitPrice;
+
+        //    Product createdProduct = await _productDal.AddAsync(product);
+
+        //    CreatedProductResponse createdProductResponse = new CreatedProductResponse();
+
+        //    createdProductResponse.Id = createdProduct.Id;
+        //    createdProductResponse.ProductName = createdProduct.ProductName;
+        //    createdProductResponse.UnitPrice = createdProduct.UnitPrice;
+        //    createdProductResponse.QuantityPerUnit = createdProduct.QuantityPerUnit;
+        //    createdProductResponse.UnitsInStock = createdProduct.UnitsInStock;
+
+        //    return createdProductResponse;
+        //} 
+        #endregion
+  
         public async Task<CreatedProductResponse> Add(CreateProductRequest createProductRequest)
         {
-            Product product = new Product();
-            product.Id = Guid.NewGuid();
-            product.ProductName = createProductRequest.ProductName;
-            product.UnitPrice = createProductRequest.UnitPrice;
-            product.QuantityPerUnit = createProductRequest.QuantityPerUnit;
-            product.UnitsInStock = createProductRequest.UnitsInStock;
-
+            Product product = _mapper.Map<Product>(createProductRequest);
             Product createdProduct = await _productDal.AddAsync(product);
-
-            CreatedProductResponse createdProductResponse = new CreatedProductResponse();
-            createdProductResponse.Id = createdProduct.Id;
-            createdProductResponse.ProductName = createdProduct.ProductName;
-            createdProductResponse.UnitPrice = createdProduct.UnitPrice;
-            createdProductResponse.QuantityPerUnit = createdProduct.QuantityPerUnit;
-            createdProductResponse.UnitsInStock = createdProduct.UnitsInStock;
-
+            CreatedProductResponse createdProductResponse = _mapper.Map<CreatedProductResponse>(createdProduct);
             return createdProductResponse;
         }
 
