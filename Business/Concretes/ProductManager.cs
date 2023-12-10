@@ -1,4 +1,5 @@
-﻿using Business.Abstracts;
+﻿using AutoMapper;
+using Business.Abstracts;
 using Business.Dtos.Requests;
 using Business.Dtos.Responses;
 using Core.DataAccess.Paging;
@@ -15,10 +16,12 @@ namespace Business.Concretes
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
+        IMapper _mapper;
 
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal, IMapper mapper)
         {
             _productDal = productDal;
+            _mapper = mapper;
         }
 
         public async Task<CreatedProductResponse> Add(CreateProductRequest createProductRequest)
@@ -42,31 +45,40 @@ namespace Business.Concretes
             return createdProductResponse;
         }
 
+        #region Commented Poor Code (async Task<IPaginate<GetListProductResponse>>)
+        //public async Task<IPaginate<GetListProductResponse>> GetListAsync()
+        //{
+        //    var productList = await _productDal.GetListAsync();
+        //    List<GetListProductResponse> getListProductResponse = new List<GetListProductResponse>();
+
+        //    foreach (var product in productList.Items)
+        //    {
+        //        getListProductResponse.Add(new GetListProductResponse
+        //        {
+        //            Id = product.Id,
+        //            ProductName = product.ProductName,
+        //            QuantityPerUnit = product.QuantityPerUnit,
+        //            UnitPrice = product.UnitPrice,
+        //            UnitsInStock = product.UnitsInStock
+        //        });
+        //    }
+
+        //    Paginate<GetListProductResponse> listResponse = new Paginate<GetListProductResponse>();
+        //    listResponse.Items = getListProductResponse;
+        //    listResponse.Count = productList.Count;
+        //    listResponse.Index = productList.Index;
+        //    listResponse.Size = productList.Size;
+        //    listResponse.From = productList.From;
+        //    listResponse.Pages = productList.Pages;
+        //    return listResponse;
+        //} 
+        #endregion
+
         public async Task<IPaginate<GetListProductResponse>> GetListAsync()
         {
             var productList = await _productDal.GetListAsync();
-            List<GetListProductResponse> getListProductResponse = new List<GetListProductResponse>();
-
-            foreach (var product in productList.Items)
-            {
-                getListProductResponse.Add(new GetListProductResponse
-                {
-                    Id = product.Id,
-                    ProductName = product.ProductName,
-                    QuantityPerUnit = product.QuantityPerUnit,
-                    UnitPrice = product.UnitPrice,
-                    UnitsInStock = product.UnitsInStock
-                });
-            }
-
-            Paginate<GetListProductResponse> listResponse = new Paginate<GetListProductResponse>();
-            listResponse.Items = getListProductResponse;
-            listResponse.Count = productList.Count;
-            listResponse.Index = productList.Index;
-            listResponse.Size = productList.Size;
-            listResponse.From = productList.From;
-            listResponse.Pages = productList.Pages;
-            return listResponse;
+            var mappedList = _mapper.Map<Paginate<GetListProductResponse>>(productList);
+            return mappedList;
         }
     }
 }
